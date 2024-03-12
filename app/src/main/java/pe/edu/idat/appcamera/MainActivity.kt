@@ -34,7 +34,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun sharePhoto() {
-        TODO("Not yet implemented")
+        if (currentPath != ""){
+            val photoUri = getUriContent(File(currentPath))
+            val intentImg = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_STREAM, photoUri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                type = "image/png"
+            }
+            val chooser = Intent.createChooser(intentImg, "share photo")
+            if (intentImg.resolveActivity(packageManager) != null) startActivity(chooser)
+        }
+
     }
 
     private fun takePhoto() {
@@ -55,7 +66,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun savePhoto() {
         val imgDirectory =getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
-        file = File.createTempFile("IMG_0001", ".png", imgDirectory)
+        file = File.createTempFile("IMG_${System.currentTimeMillis()}", ".png", imgDirectory)
         currentPath =file.absolutePath
     }
 
